@@ -36,29 +36,39 @@
       // .length 要素の個数を取得します。
       $(function(){
         var Array = [];
+        //　それぞれliの座標を入れておく
           $('li').each(function(i){
+            // liの数だけ処理をする
             if(i===0){
               Array.push(i);
             } else {
               Array.push($('li').eq(i-1).width() + Array[i-1])
+              // 一つ前のliの幅とArrayの一つ前の値
             };
           });
         var slideCurrent = 0;
+        // 今表示されているli
         var sliding = function(){
-          var slideLength = $('li').length;
-          var slideNum = slideCurrent % slideLength
-          console.log(Array[slideNum]);
+          // var slideNum = slideCurrent % slideLength
           $('ul').animate({
-            left: -Array[slideNum]
+            left: -Array[slideCurrent]
           });
           };
         $('.slider-ctrl-btn').click(function(){
           var ctrl = $(this).data('ctrl');
+          var slideLength = $('li').length;
           if(ctrl === 'prev'){
-            slideCurrent+=3;
+            slideCurrent--;
+            if(slideCurrent < 0){
+              slideCurrent = 3;
+              console.log(slideLength);
+            }
             sliding();
           } else if(ctrl === 'next'){
             slideCurrent ++;
+            if(slideCurrent > 3){
+              slideCurrent = 0
+            }
             sliding();
           }
          });
@@ -67,6 +77,10 @@
       //ボタンを押すと、配列の座標の位置で表示される。
       //取得していたdata属性がprevであれば配列のindexが1減り、
       //nextであれば1増える。
+      //
+      //
+      //最小０　０を下回ったら３に
+      //最大３　３を上回ったら０に
       //
     </script>
   </body>

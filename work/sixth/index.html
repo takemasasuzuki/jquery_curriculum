@@ -27,15 +27,15 @@
       // .replace(/\s+/g,'').length 改行を含まない文字数を取得します。
       // .val() input要素のvalueを取得します。
       $(function(){
+        var countMax = 30;
         $('.input').keyup(function() {
-          var countMax = 30;
           var thisValueLength = $(this).val().replace(/\s+/g,'').length;
-          var countDown = (countMax) - (thisValueLength);
+          var countDown = countMax - thisValueLength;
           $('.rest-count').html(countDown);
           if(countDown < 0){
-            $('.rest-count').css({color:'red'});
+            $('.rest-count').addClass('red');
           } else{
-            $('.rest-count').css({color:'#000000'});
+            $('.rest-count').removeClass('red');
           };
         });
       })
