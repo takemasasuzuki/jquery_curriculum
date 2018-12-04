@@ -34,6 +34,40 @@
       // .data() 要素のdata属性を取得します。
       // .width() 要素の幅を取得します。
       // .length 要素の個数を取得します。
+      $(function(){
+        var Array = [];
+          $('li').each(function(i){
+            if(i===0){
+              Array.push(i);
+            } else {
+              Array.push($('li').eq(i-1).width() + Array[i-1])
+            };
+          });
+        var slideCurrent = 0;
+        var sliding = function(){
+          var slideLength = $('li').length;
+          var slideNum = slideCurrent % slideLength
+          console.log(Array[slideNum]);
+          $('ul').animate({
+            left: -Array[slideNum]
+          });
+          };
+        $('.slider-ctrl-btn').click(function(){
+          var ctrl = $(this).data('ctrl');
+          if(ctrl === 'prev'){
+            slideCurrent+=3;
+            sliding();
+          } else if(ctrl === 'next'){
+            slideCurrent ++;
+            sliding();
+          }
+         });
+        });
+      //配列[1枚目の座標(0),2枚目の座標(x),3枚目の座標(x+y),4枚目の座標(x+y+z)]
+      //ボタンを押すと、配列の座標の位置で表示される。
+      //取得していたdata属性がprevであれば配列のindexが1減り、
+      //nextであれば1増える。
+      //
     </script>
   </body>
 </html>
