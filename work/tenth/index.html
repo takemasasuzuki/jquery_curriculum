@@ -51,19 +51,65 @@
       // http://qiita.com/marumaru8228/items/65fc684383b096f0e548
       //
       //
-      // $.ajax({
-      //   url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
-      //   type: 'GET',
-      //   datatype: 'json',
-      //   data: {
-      //     // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
-      //     applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
-      //     booksGenreId: '001'
-      //   },
-      // }).done(function(data) {
-      //   // この中にデータ取得後の動きを記述していきます。
-      // });
-      //
+    $(function(){
+      var filter ='';
+      var page = 1;
+      $('#js-search-button').click(function(event) {
+        var searchword = $('#js-search-word').val();
+        // console.log(searchword);
+        clickBtn(searchword);
+      });
+      var clickBtn = function(searchword){
+        if(searchword !== filter){//別のワードで検索した場合ulを消すための処理
+          $('ul').empty();
+          page = 1;
+        };
+        filter = searchword;//同じワードで検索した場合サーチワードとフィルターが同じになるためemptyメソッドは効かない
+      $.ajax({
+        url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+        type: 'GET',
+        datatype: 'json',
+        data: {
+          // 「区分:サービス固有パラメーター」を確認して、必要な情報をdata内に入れましょう。
+          applicationId: '1019399324990976605', // (今回はこのIDを使用してください)
+          booksGenreId: '001',
+          keyword:searchword,
+          hits:20,
+          page:page,
+        },
+      }).done(function(data) {
+        showImages(data);
+      }).fail(function(error){
+        showError(error,searchword);
+      })
+      };
+      var showImages = function(data){
+        var list ='';
+        var pagecount = data.pageCount;
+        if(data.hits === 0){
+          if(!$('.message').length){//messageに表示されているものがなかったらmessageを表示させる
+            $('ul').prepend('<p class ="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p>');
+          }
+        } else if(data.hits > 0){
+          $.each(data.Items,function(index,item){
+            list += '<li class="lists__item"><div class="lists__item__inner"><a href='+item.Item.itemUrl+' class="lists__item__link" target="_blank"><img src='+item.Item.mediumImageUrl+' class="lists__item__img" alt="image"><p class="lists__item__detail">作品名：'+item.Item.title+'</p><p class="lists__item__detail">作者'+item.Item.author+'：</p><p class="lists__item__detail">出版社：'+item.Item.publisherName+'</p></a></div></li>';
+          })
+        }
+        $('ul').prepend(list);
+        if(pagecount >= page){//ページ送り
+          page++;
+        // } else {
+        };
+        // console.log(data.Items);
+      };
+      var showError = function(error,searchword){
+        if(searchword.length == 0){
+        $('ul').html('<p class ="message">検索ワードを入力してください。</p>');
+        } else {
+          $('ul').html('<p class ="message">通信エラー</p>');
+        };
+      }
+    })
     </script>
   </body>
 </html>
